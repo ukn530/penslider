@@ -17,6 +17,10 @@ public class PenguinControl : MonoBehaviour {
 	public GameObject start_ui;
 	public GameObject score_text;
 	private bool shareable = false;
+	private bool isJump = false;
+	private float yPrev = 0;
+
+	public AudioClip theme;
 
 	private BannerView bannerView;
 	bool capture = false;
@@ -31,10 +35,10 @@ public class PenguinControl : MonoBehaviour {
 
 	void OnEnable () {
 		// このクラスのメソッドをDelegateメソッドに追加
-		EventManager.onDown += onDown;
 		EventManager.onSpace += onSpace;
 		EventManager.onLeft += onLeft;
 		EventManager.onRight += onRight;
+		EventManager.onUp += onUp;
 		EventManager.onRestartButtonDown += onRestartButtonDown;
 		EventManager.onHomeButtonDown += onHomeButtonDown;
 		EventManager.onRankButtonDown += onRankButtonDown;
@@ -43,10 +47,10 @@ public class PenguinControl : MonoBehaviour {
 
 	void OnDisable () {
 		// このクラスのメソッドをDelegateメソッドから削除
-		EventManager.onDown -= onDown;
 		EventManager.onSpace -= onSpace;
 		EventManager.onLeft -= onLeft;
 		EventManager.onRight -= onRight;
+		EventManager.onUp -= onUp;
 		EventManager.onRestartButtonDown -= onRestartButtonDown;
 		EventManager.onHomeButtonDown -= onHomeButtonDown;
 		EventManager.onRankButtonDown -= onRankButtonDown;
@@ -129,6 +133,17 @@ public class PenguinControl : MonoBehaviour {
 				pos.x += Time.deltaTime * 100 * (-6 - transform.position.x) / 6;
 			}
 
+			if (isJump) {
+				float yTemp = pos.y;
+				pos.y += (pos.y - yPrev) - 0.3f;
+				yPrev = yTemp;
+				Debug.Log ("posy = " + pos.y);
+				if (pos.y < 2.5f) {
+					pos.y = 2.5f;
+					isJump = false;
+				}
+			}
+
 			// 位置の値を設定
 			transform.position = pos;
 		}
@@ -206,6 +221,8 @@ public class PenguinControl : MonoBehaviour {
 			GameManager.state = State.Over;
 			enableCrashAnimation = true;
 
+			SoundManager.instance.StopBGM ();
+
 			// スコアを出す
 			score_text.GetComponent<RectTransform> ().anchoredPosition3D = new Vector3 (10, 110, 0);
 
@@ -214,16 +231,13 @@ public class PenguinControl : MonoBehaviour {
 
 			// バナー表示
 			bannerView.Show ();
-		}
-	}
 
-	// タッチしたら
-	void onDown() {
-		
+		}
 	}
 
 	// リスタートボタンを押したら
 	void onRestartButtonDown() {
+		SoundManager.instance.PlayBGM (theme);
 		resetGame ();
 	}
 
@@ -287,6 +301,16 @@ public class PenguinControl : MonoBehaviour {
 			goRight ();
 		} else {
 			goLeft ();
+		}
+	}
+
+
+	void onUp () {
+		if (transform.position.y == 2.5f) {
+			isJump = true;
+			yPrev = transform.position.y;
+			Vector3 pos = new Vector3(transform.position.x, transform.position.y + 1.5f, transform.position.z);
+			transform.position = pos;
 		}
 	}
 

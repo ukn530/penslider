@@ -9,6 +9,7 @@ public class EventManager: MonoBehaviour
 	public static event UserAction onSpace;
 	public static event UserAction onLeft;
 	public static event UserAction onRight;
+	public static event UserAction onUp;
 	public static event UserAction onRestartButtonDown;
 	public static event UserAction onShareButtonDown;
 	public static event UserAction onHomeButtonDown;
@@ -23,17 +24,6 @@ public class EventManager: MonoBehaviour
 		if (Input.touchCount == 1 && Input.GetTouch (0).phase == TouchPhase.Began) {
 			touchBeganPosition = Input.GetTouch (0).position;
 			enableAction = true;
-		}
-
-		// スマホでタッチorPCでクリック
-		if (Input.touchCount == 1 && Input.GetTouch (0).phase == TouchPhase.Began) {
-			if (onDown != null) {
-				onDown ();
-			}
-		} else if (Input.GetMouseButtonDown(0)) {
-			if (onDown != null) {
-				onDown ();
-			}
 		}
 
 		// スマホで左スワイプorPCで左キー押下
@@ -62,6 +52,22 @@ public class EventManager: MonoBehaviour
 					Debug.Log ("touchPos:" + Input.GetTouch(0).position.x + "touchBegan:" + touchBeganPosition.x);
 					if (onRight != null) {
 						onRight ();
+						enableAction = false;
+					}
+				}
+			}
+		}
+
+		// スマホで上スワイプorPCで上キー押下
+		if (Input.GetKeyDown (KeyCode.UpArrow)) {
+			if (onUp != null)
+				onUp ();
+		} else {
+			if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Moved) {
+				if (Input.GetTouch (0).position.y > touchBeganPosition.y + 50 && enableAction) {
+					Debug.Log ("touchPos:" + Input.GetTouch(0).position.y + "touchBegan:" + touchBeganPosition.y);
+					if (onUp != null) {
+						onUp ();
 						enableAction = false;
 					}
 				}

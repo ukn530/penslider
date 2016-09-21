@@ -112,39 +112,46 @@ public class ObstacleController : MonoBehaviour {
 						mashroom.transform.parent = newObj.transform;
 					}
 					// 猿を1/10の確率で出す
-					if (randomNum10 == 2 && monkey == null) {
-						int randomNum2 = Random.Range (0, 2);
-						Debug.Log ("monkey: " + randomNum2);
-						Vector3 monkeyPos = new Vector3 (((float)randomNum2 - 0.5f) * 20, 8.3f, pos.z - 2);
-						Vector3 monkeyAngle = new Vector3 (0, (randomNum2 - 1) * 180, 10);
+					if (monkey == null) {
+						if (randomNum10 == 2 || randomNum10 == 5) {
+							int randomNum2 = Random.Range (0, 2);
+							Debug.Log ("monkey: " + randomNum2);
+							Vector3 monkeyPos = new Vector3 (((float)randomNum2 - 0.5f) * 20, 8.3f, pos.z - 2);
+							Vector3 monkeyAngle = new Vector3 (0, (randomNum2 - 1) * 180, 10);
 
-						monkey = Instantiate ((GameObject)preMonkey, monkeyPos, Quaternion.identity) as GameObject;
-						monkey.transform.eulerAngles = monkeyAngle;
-						monkey.transform.parent = newObj.transform;
+							monkey = Instantiate ((GameObject)preMonkey, monkeyPos, Quaternion.identity) as GameObject;
+							monkey.transform.eulerAngles = monkeyAngle;
+							monkey.transform.parent = newObj.transform;
+						}
+					}
+					if (elephant == null) {
+						// ぞうを1/10の確率で出す
+						if (randomNum10 == 3 || randomNum10 == 6) {
+							int randomNum2 = Random.Range (0, 2);
+							Debug.Log ("elephant: " + randomNum2);
+							Vector3 elephantPos = new Vector3 (((float)randomNum2 - 0.5f) * 40, 4.6f, pos.z - 2);
+							Vector3 elephantAngle = new Vector3 (0, (randomNum2 - 1) * 180, 0);
+
+							elephant = Instantiate ((GameObject)preElephant, elephantPos, Quaternion.identity) as GameObject;
+							elephant.transform.eulerAngles = elephantAngle;
+							elephant.transform.parent = newObj.transform;
+						}
 					}
 
-					// ぞうを1/10の確率で出す
-					if (randomNum10 == 3 && elephant == null) {
-						int randomNum2 = Random.Range (0, 2);
-						Debug.Log ("elephant: " + randomNum2);
-						Vector3 elephantPos = new Vector3 (((float)randomNum2 - 0.5f) * 40, 4.6f, pos.z - 2);
-						Vector3 elephantAngle = new Vector3 (0, (randomNum2 - 1) * 180, 0);
-
-						elephant = Instantiate ((GameObject)preElephant, elephantPos, Quaternion.identity) as GameObject;
-						elephant.transform.eulerAngles = elephantAngle;
-						elephant.transform.parent = newObj.transform;
+					if (mole == null) {
+						// もぐらを1/10の確率で出す
+						if (randomNum10 == 4 || randomNum10 == 7) {
+							int randomNum3 = Random.Range (-1, 2);
+							Debug.Log ("mole: " + randomNum3);
+							Vector3 molePos = new Vector3 (randomNum3 * 5.85f, 1.1f, pos.z - 2);
+							mole = Instantiate ((GameObject)preMole, molePos, Quaternion.identity) as GameObject;
+							mole.GetComponent<Animator> ().speed = 0;
+							mole.transform.parent = newObj.transform;
+							isDoneAnimation = false;
+						}
 					}
 
-					// もぐらを1/10の確率で出す
-					if (randomNum10 == 4 && mole == null) {
-						int randomNum3 = Random.Range (-1, 2);
-						Debug.Log ("mole: " + randomNum3);
-						Vector3 molePos = new Vector3 (randomNum3 * 5.85f, 1.1f, pos.z - 2);
-						mole = Instantiate ((GameObject)preMole, molePos, Quaternion.identity) as GameObject;
-						mole.GetComponent<Animator> ().speed = 0;
-						mole.transform.parent = newObj.transform;
-						isDoneAnimation = false;
-					}
+
 
 					score++;
 				}
